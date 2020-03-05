@@ -1,31 +1,32 @@
+import Vue from 'vue'
 import axios from 'axios'
 import router from './router'
 import store from './store'
-import Vue from 'vue'
+
 
 // 基础配置
 axios.defaults.timeout = 5000  // 超时时间
-axios.defaults.baseURL = 'http://localhost:5000/api'
+axios.defaults.baseURL = 'http://localhost:5000'
 
-// 添加请求拦截器
+// Add a request interceptor
 axios.interceptors.request.use(function (config) {
-  // 在发送请求前添加信息
+  // Do something before request is sent
   const token = window.localStorage.getItem('blog-token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
 }, function (error) {
-  // 处理请求错误
+  // Do something with request error
   return Promise.reject(error)
 })
 
-// 添加响应拦截器
+// Add a response interceptor
 axios.interceptors.response.use(function (response) {
-  // 处理响应数据
+  // Do something with response data
   return response
 }, function (error) {
-  // 处理响应错误
+  // Do something with response error
   switch  (error.response.status) {
     case 401:
       // 清除 Token 及 已认证 等状态
@@ -40,8 +41,18 @@ axios.interceptors.response.use(function (response) {
       }
       break
 
+    case 403:
+      Vue.toasted.error('403: Forbidden', { icon: 'fingerprint' })
+      router.back()
+      break
+
     case 404:
-      Vue.toasted.error('404: NOT FOUND', { icon: 'fingerprint' })
+      Vue.toasted.error('404: Not Found', { icon: 'fingerprint' })
+      router.back()
+      break
+    
+    case 500:  // 根本拿不到 500 错误，因为 CORs 不会过来
+      Vue.toasted.error('500: Oops... INTERNAL SERVER ERROR', { icon: 'fingerprint' })
       router.back()
       break
   }
