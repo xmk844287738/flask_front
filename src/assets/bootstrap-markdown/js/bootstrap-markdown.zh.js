@@ -1,5 +1,5 @@
 /**
- * Created by wangy on 2017/12/16.
+ * Created by  on 2017/12/16.
  */
 /**
  * Chinese translation for bootstrap-markdown
