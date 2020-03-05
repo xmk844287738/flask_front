@@ -45,12 +45,14 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     }
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': require('../config/dev.env'),
-       $: 'jquery',
-       jquery: 'jquery',
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jquery: 'jquery',
       'window.jQuery': 'jquery',
-       jQuery: 'jquery'
+      jQuery: 'jquery'
+    }),
+    new webpack.DefinePlugin({
+      'process.env': require('../config/dev.env')
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
